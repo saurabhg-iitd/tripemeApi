@@ -1,0 +1,17 @@
+package com.tripeme.api.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import com.tripeme.api.bo.Location;
+
+@Repository
+public interface LocationRepository extends JpaRepository<Location, Integer> {
+	
+	@Query(value="select l.* from location l right join trip t on t.location_id=l.location_id group by l.location_id;", nativeQuery=true)
+	List<Location> getLocationsHavingTrips();
+
+}
