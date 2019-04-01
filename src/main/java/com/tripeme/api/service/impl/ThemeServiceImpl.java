@@ -20,7 +20,7 @@ public class ThemeServiceImpl implements ThemeService{
 	}
 
 	@Override
-	public Theme getThemeById(Integer themeId) {
+	public Theme getThemeById(Long themeId) {
 		return themeRepository.getOne(themeId);
 	}
 

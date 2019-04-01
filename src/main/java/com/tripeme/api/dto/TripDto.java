@@ -1,29 +1,41 @@
-package com.tripeme.api.request;
+package com.tripeme.api.dto;
 
 import java.util.Date;
+import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
+import com.tripeme.api.bo.Resource;
 import com.tripeme.api.bo.Destination;
 import com.tripeme.api.bo.Theme;
 
-public class TripRequest {
+public class TripDto {
 	Long tripId;
+	String name;
+	String description;
 	Date startDate;
 	Date endDate;
 	Integer maxBookings;
 	Destination destination;
 	Theme theme;
-	MultipartFile[] files;
-	/*Integer locationId;
-	Integer themeId;*/
 	Date createdOn;
 	Date updatedOn;
+	List<Resource>resources;
 	public Long getTripId() {
 		return tripId;
 	}
 	public void setTripId(Long tripId) {
 		this.tripId = tripId;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public Date getStartDate() {
 		return startDate;
@@ -44,13 +56,17 @@ public class TripRequest {
 		this.maxBookings = maxBookings;
 	}
 	
-	
-	
 	public Destination getDestination() {
 		return destination;
 	}
 	public void setDestination(Destination destination) {
 		this.destination = destination;
+	}
+	public List<Resource> getResources() {
+		return resources;
+	}
+	public void setResources(List<Resource> resources) {
+		this.resources = resources;
 	}
 	public Theme getTheme() {
 		return theme;
@@ -70,13 +86,12 @@ public class TripRequest {
 	public void setUpdatedOn(Date updatedOn) {
 		this.updatedOn = updatedOn;
 	}
-	public MultipartFile[] getFiles() {
-		return files;
+	public List<Resource> getImages() {
+		return resources;
 	}
-	public void setFiles(MultipartFile[] files) {
-		this.files = files;
+	public void setImages(List<Resource> resources) {
+		this.resources = resources;
 	}
-	
 	
 	
 }

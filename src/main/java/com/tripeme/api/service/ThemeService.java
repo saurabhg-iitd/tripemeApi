@@ -6,7 +6,7 @@ import com.tripeme.api.bo.Theme;
 
 public interface ThemeService {
 	Theme addTheme(Theme theme);
-	Theme getThemeById(Integer themeId);
+	Theme getThemeById(Long themeId);
 	List<Theme> getThemes();
 	
 

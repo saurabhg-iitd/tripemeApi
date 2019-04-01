@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tripeme.api.request.UserTripRequest;
+import com.tripeme.api.response.UserTripResponse;
 import com.tripeme.api.bo.User;
 import com.tripeme.api.bo.UserTrip;
 import com.tripeme.api.service.UserTripService;;
@@ -31,7 +32,7 @@ public class UserTripController {
 	}
 	
 	@PostMapping()
-	UserTrip addUserTrip(@RequestBody UserTripRequest request) {
+	UserTripResponse addUserTrip(@RequestBody UserTripRequest request) {
 		return userTripService.addUserTrip(request);
 	}
 

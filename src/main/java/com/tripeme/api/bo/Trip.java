@@ -24,13 +24,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Trip {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	Long tripId;
+	Long id;
+	String name;
+	String description;
+	Boolean active;
 	Date startDate;
 	Date endDate;
+	String startLocation;
+	String endLocation;
 	Integer maxBookings;
+	Integer cost;
 	@OneToOne(fetch = FetchType.LAZY, cascade =  CascadeType.MERGE)
-	@JoinColumn(name = "location_id", nullable = false)
-	Location location;
+	@JoinColumn(name = "destination_id", nullable = false)
+	Destination destination;
 	@OneToOne(fetch = FetchType.LAZY, cascade =  CascadeType.MERGE)
 	@JoinColumn(name = "theme_id", nullable = false)
 	Theme theme;
@@ -39,12 +45,10 @@ public class Trip {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.user", cascade=CascadeType.ALL)
 	@JsonBackReference
 	private Set<UserTrip> userTrips = new HashSet<>(0);
-	public Long getTripId() {
-		return tripId;
-	}
-	public void setTripId(Long tripId) {
-		this.tripId = tripId;
-	}
+	private String videoUrl;
+	
+	
+	
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -65,11 +69,42 @@ public class Trip {
 	}
 	
 	
-	public Location getLocation() {
-		return location;
+	
+	public Long getId() {
+		return id;
 	}
-	public void setLocation(Location location) {
-		this.location = location;
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public Boolean getActive() {
+		return active;
+	}
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+	public String getStartLocation() {
+		return startLocation;
+	}
+	public void setStartLocation(String startLocation) {
+		this.startLocation = startLocation;
+	}
+	public String getEndLocation() {
+		return endLocation;
+	}
+	public void setEndLocation(String endLocation) {
+		this.endLocation = endLocation;
+	}
+	public Integer getCost() {
+		return cost;
+	}
+	public void setCost(Integer cost) {
+		this.cost = cost;
+	}
+	public Destination getDestination() {
+		return destination;
+	}
+	public void setDestination(Destination destination) {
+		this.destination = destination;
 	}
 	public Theme getTheme() {
 		return theme;
@@ -95,6 +130,27 @@ public class Trip {
 	public void setUserTrips(Set<UserTrip> userTrips) {
 		this.userTrips = userTrips;
 	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getVideoUrl() {
+		return videoUrl;
+	}
+	public void setVideoUrl(String videoUrl) {
+		this.videoUrl = videoUrl;
+	}
+	
+	
+	
 	
 	
 

@@ -7,12 +7,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
-public class Location {
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class Destination {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	Integer locationId;
+	Long id;
 	String name;
+	String description;
+	Boolean active;
 	String city;
 	String state;
 	String country;
@@ -68,12 +73,27 @@ public class Location {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Integer getLocationId() {
-		return locationId;
+	public Long getId() {
+		return id;
 	}
-	public void setLocationId(Integer locationId) {
-		this.locationId = locationId;
+	public void setId(Long id) {
+		this.id = id;
 	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public Boolean getActive() {
+		return active;
+	}
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+	
+	
+	
 	
 	
 	

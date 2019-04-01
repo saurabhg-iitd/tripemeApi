@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.tripeme.api.bo.Theme;
 
 @Repository
-public interface ThemeRepository extends JpaRepository<Theme, Integer> {
+public interface ThemeRepository extends JpaRepository<Theme, Long> {
 
 }

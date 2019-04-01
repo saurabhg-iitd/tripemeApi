@@ -21,20 +21,26 @@ public class TripServiceImpl implements TripService{
 	}
 
 	@Override
-	public Trip addTrip(Trip trip) {
+	public Trip saveTrip(Trip trip) {
 		return tripRepository.save(trip);
 		
 	}
+	
 
 	@Override
-	public List<Trip> getTripsByLocationName(String name) {
-		return tripRepository.getTripsByLocationName(name);
+	public List<Trip> getTripsByDestinationName(String name) {
+		return tripRepository.getTripsByDestinationName(name);
 	}
 
 	@Override
-	public List<Trip> getTripsByLocationId(Integer id) {
+	public List<Trip> getTripsByDestinationId(Long id) {
 		// TODO Auto-generated method stub
-		return tripRepository.getTripsByLocationId(id);
+		return tripRepository.getTripsByDestinationId(id);
+	}
+
+	@Override
+	public List<Trip> getAllTrips() {
+		return tripRepository.findAll();
 	}
 
 

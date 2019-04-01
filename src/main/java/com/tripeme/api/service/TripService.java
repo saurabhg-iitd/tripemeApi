@@ -6,7 +6,8 @@ import com.tripeme.api.bo.Trip;
 
 public interface TripService {
 	Trip getTripById(Long tripid);
-	Trip addTrip(Trip trip);
-	List<Trip> getTripsByLocationId(Integer id);
-	List<Trip> getTripsByLocationName(String name);
+	Trip saveTrip(Trip trip);
+	List<Trip> getTripsByDestinationId(Long id);
+	List<Trip> getTripsByDestinationName(String name);
+	List<Trip> getAllTrips();
 }

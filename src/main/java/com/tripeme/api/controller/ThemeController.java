@@ -21,7 +21,7 @@ public class ThemeController {
 	ThemeService themeService;
 	
 	@GetMapping("/theme/{id}")
-	Theme getTheme(@PathVariable Integer id) {
+	Theme getTheme(@PathVariable Long id) {
 		return themeService.getThemeById(id);
 	}
 	

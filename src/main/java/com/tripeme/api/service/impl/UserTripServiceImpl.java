@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tripeme.api.request.UserTripRequest;
+import com.tripeme.api.response.UserTripResponse;
 import com.tripeme.api.bo.Trip;
 import com.tripeme.api.bo.User;
 import com.tripeme.api.bo.UserTrip;
 import com.tripeme.api.bo.UserTripId;
+import com.tripeme.api.enums.PaymentStatus;
 import com.tripeme.api.enums.UserTripStatus;
 import com.tripeme.api.repository.TripRepository;
 import com.tripeme.api.repository.UserRepository;
@@ -59,7 +61,7 @@ public class UserTripServiceImpl implements UserTripService {
 
 
 	@Override
-	public UserTrip addUserTrip(UserTripRequest request) {
+	public UserTripResponse addUserTrip(UserTripRequest request) {
 		User user = userRepository.getOne(request.getUserId());
 		Trip trip = tripRepository.getOne(request.getTripId());
 		UserTrip userTrip = new UserTrip();
@@ -68,7 +70,11 @@ public class UserTripServiceImpl implements UserTripService {
 		userTrip.setUserTripStatus(UserTripStatus.added);
 		userTrip.setCreateOn(new Date());
 		
-		return userTripRepository.save(userTrip);
+		userTrip= userTripRepository.save(userTrip);
+		UserTripResponse response = new UserTripResponse();
+		response.setMyBookings(request.getTotalBookings());
+		response.setUserTripStatus(userTrip.getUserTripStatus());
+		return response;
 	}
 
 }
