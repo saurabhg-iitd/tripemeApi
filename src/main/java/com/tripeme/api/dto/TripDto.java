@@ -8,7 +8,7 @@ import com.tripeme.api.bo.Destination;
 import com.tripeme.api.bo.Theme;
 
 public class TripDto {
-	Long tripId;
+	Long id;
 	String name;
 	String description;
 	Date startDate;
@@ -18,12 +18,18 @@ public class TripDto {
 	Theme theme;
 	Date createdOn;
 	Date updatedOn;
+	String startLocation;
+	String endLocation;
+	Integer cost;
+	private String videoUrl;
+	Boolean active;
 	List<Resource>resources;
-	public Long getTripId() {
-		return tripId;
+	
+	public Long getId() {
+		return id;
 	}
-	public void setTripId(Long tripId) {
-		this.tripId = tripId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	public String getName() {
 		return name;
@@ -92,6 +98,38 @@ public class TripDto {
 	public void setImages(List<Resource> resources) {
 		this.resources = resources;
 	}
+	public String getStartLocation() {
+		return startLocation;
+	}
+	public void setStartLocation(String startLocation) {
+		this.startLocation = startLocation;
+	}
+	public String getEndLocation() {
+		return endLocation;
+	}
+	public void setEndLocation(String endLocation) {
+		this.endLocation = endLocation;
+	}
+	public Integer getCost() {
+		return cost;
+	}
+	public void setCost(Integer cost) {
+		this.cost = cost;
+	}
+	public String getVideoUrl() {
+		return videoUrl;
+	}
+	public void setVideoUrl(String videoUrl) {
+		this.videoUrl = videoUrl;
+	}
+	public Boolean getActive() {
+		return active;
+	}
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+	
+	
 	
 	
 }

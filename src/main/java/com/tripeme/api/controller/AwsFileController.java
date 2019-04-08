@@ -1,5 +1,7 @@
-	package com.tripeme.api.controller;
+/*package com.tripeme.api.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,11 +20,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,13 +30,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.tripeme.api.enums.ResourceType;
 import com.tripeme.api.exception.FileStorageException;
+import com.tripeme.api.property.AwsProperties;
 import com.tripeme.api.property.FileStorageProperties;
 import com.tripeme.api.response.UploadFileResponse;
 import com.tripeme.api.service.ResourceService;
 import com.tripeme.api.service.impl.FileStorageService;
+import com.tripeme.api.util.AwsS3Util;
 
 @RestController
-public class FileController {
+public class AwsFileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
@@ -48,64 +50,55 @@ public class FileController {
     
     @Autowired
     private ResourceService resourceService;
+       
+    @Autowired
+    private AwsProperties awsProperties;
     
     @PostMapping("/uploadFile")
-    public com.tripeme.api.bo.Resource uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("imageType") ResourceType resourceType, @RequestParam("id") Long id, @RequestParam("caption") String caption) {
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile mFile, @RequestParam("imageType") ResourceType resourceType, @RequestParam("id") Long id) {
+    	AwsS3Util  awsService = new AwsS3Util();
     	Path fileStorageLocation = getFileStorageLocation(resourceType,id);
     	String fileName = fileStorageService.storeFile(file,resourceType,id,fileStorageLocation);
+    	try {
+    		File file = convert(mFile);
+    		awsService.upload(awsProperties, file.getName(), file, resourceType, id);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/downloadFile/"+resourceType.toString()+"/"+id+"/")
-                .path(fileName)
+                .path(mFile.getName())
                 .toUriString();
         
        com.tripeme.api.bo.Resource resource = new com.tripeme.api.bo.Resource();
        resource.setResourceType(resourceType);
 		resource.setSourceId(id);
 		resource.setImageUrl(fileDownloadUri);
-		resource.setImageCaption(caption);
 		resource.setCreatedOn(new Date());
 		resource.setUpdatedOn(new Date());
 		resource = resourceService.saveResource(resource);
         
-		/*Resource resource = new Resource();
+		Resource resource = new Resource();
 		resource.setResourceType(resourceType);
 		resource.setSourceId(id);
 		resource.setImageUrl(fileDownloadUri);
 		resource.setCreatedOn(new Date());
 		resource.setUpdatedOn(new Date());
-		resource = imageService.saveImage(resource);*/
-		return resource;
+		resource = imageService.saveImage(resource);
+		
 
+        return new UploadFileResponse(mFile.getName(), fileDownloadUri,
+                mFile.getContentType(), mFile.getSize());
     }
 
     @PostMapping("/uploadMultipleFiles")
-    public List<com.tripeme.api.bo.Resource> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("resourceType") ResourceType resourceType, @RequestParam("id") Long id) {
+    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("resourceType") ResourceType resourceType, @RequestParam("id") Long id) {
         return Arrays.asList(files)
                 .stream()
-                .map(file -> uploadFile(file,resourceType,id,""))
+                .map(file -> uploadFile(file,resourceType,id))
                 .collect(Collectors.toList());
-    }
-    
-    @GetMapping("/resource/{resourceType}/{id}")
-    public List<com.tripeme.api.bo.Resource> getResources(@PathVariable ResourceType resourceType, @PathVariable Long id){
-    	return resourceService.getResources(id, resourceType);
-    }
-    
-    @GetMapping("/resource/{id}")
-    public com.tripeme.api.bo.Resource getResourceById(@PathVariable Long id){
-    	return resourceService.getResourceById(id);
-    }
-    
-    @PostMapping("/resource")
-    public com.tripeme.api.bo.Resource getResourceById(@RequestBody com.tripeme.api.bo.Resource resource){
-    	return resourceService.saveResource(resource);
-    }
-    
-    @DeleteMapping("/resource/{id}")
-    public com.tripeme.api.bo.Resource deleteResourceById(@PathVariable Long id){
-    	com.tripeme.api.bo.Resource resource = getResourceById(id);
-    	resourceService.deleteResource(resource);
-    	return resource;
     }
 
     @GetMapping("/downloadFile/{resourceType}/{id}/{fileName:.+}")
@@ -132,7 +125,6 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
-   
     
 	Path getFileStorageLocation(ResourceType resourceType, Long id) {
 		Path fileStorageLocation = null;
@@ -140,10 +132,10 @@ public class FileController {
 			fileStorageLocation = Paths.get(fileStorageProperties.getLocationUploadDir()+"/"+id)
 					.toAbsolutePath().normalize();
 		}else if (resourceType.equals(ResourceType.theme)) {
-			fileStorageLocation = Paths.get(fileStorageProperties.getThemeUploadDir()+"/"+id)
+			fileStorageLocation = Paths.get(fileStorageProperties.getTripUploadDir()+"/"+id)
 					.toAbsolutePath().normalize();
 		}else if (resourceType.equals(ResourceType.trip)) {
-			fileStorageLocation = Paths.get(fileStorageProperties.getTripUploadDir()+"/"+id)
+			fileStorageLocation = Paths.get(fileStorageProperties.getThemeUploadDir()+"/"+id)
 					.toAbsolutePath().normalize();
 		}
 			try {
@@ -154,4 +146,14 @@ public class FileController {
 			}
 		return fileStorageLocation;
 	}
-}
+	
+	public File convert(MultipartFile file) throws IOException
+	{    
+	    File convFile = new File(file.getOriginalFilename());
+	    convFile.createNewFile(); 
+	    FileOutputStream fos = new FileOutputStream(convFile); 
+	    fos.write(file.getBytes());
+	    fos.close(); 
+	    return convFile;
+	}
+}*/

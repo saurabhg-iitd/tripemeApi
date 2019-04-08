@@ -1,5 +1,6 @@
 package com.tripeme.api.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,13 @@ public class ThemeController {
 	
 	@PostMapping("/theme")
 	Theme addTheme(@RequestBody Theme theme) {
+		return themeService.addTheme(theme);
+	}
+	
+	@PostMapping("/theme/{id}")
+	Theme addTheme(@RequestBody Theme theme,@PathVariable Long id) {
+		theme.setId(id);
+		theme.setUpdatedOn(new Date());
 		return themeService.addTheme(theme);
 	}
 	

@@ -55,10 +55,11 @@ public class TripController {
 		return tripDto;
 	}
 	
-	@PutMapping("/trip/{id}")
+	@PostMapping("/trip/{id}")
     public Trip updateTrip(@RequestBody TripDto tripDto,@PathVariable Long id) {
 		Trip trip = TripMapper.INSTANCE.tripDtoToTrip(tripDto);
 		trip.setId(id);
+		trip.setUpdatedOn(new Date());
 		return tripService.saveTrip(trip);
 	}
 	
@@ -68,26 +69,12 @@ public class TripController {
 	}
 	
 	@PostMapping("/trip")
-	public Trip addTrip(@RequestBody TripRequest request) {
+	public Trip addTrip(@RequestBody TripDto request) {
 		Theme theme = themeService.getThemeById(request.getTheme().getId());
 		Destination destination = destinationService.getDestinationById(request.getDestination().getId());
-		Trip trip = new Trip();
-		trip.setCreatedOn(new Date());
-		trip.setUpdatedOn(new Date());
-		trip.setTheme(theme);
-		trip.setEndDate(request.getEndDate());
-		trip.setStartDate(request.getStartDate());
-		trip.setMaxBookings(request.getMaxBookings());
+		Trip trip = TripMapper.INSTANCE.tripDtoToTrip(request);
 		trip.setDestination(destination);
-		/*trip = tripService.addTrip(trip);*/
-		/*List<UploadFileResponse> fileResponses = fileController.uploadMultipleFiles(request.getFiles(), ImageType.trip, trip.getTripId());
-		Set<Image> images = new HashSet<>();
-		for (UploadFileResponse res : fileResponses) {
-			Image image = new Image();
-			image.setTrip(trip);
-			image.setUrl(res.getFileDownloadUri());
-			images.add(image);
-		}*/
+		trip.setTheme(theme);
 		return  tripService.saveTrip(trip);
 	}
 	
@@ -96,6 +83,7 @@ public class TripController {
 		return tripService.getTripsByDestinationName(name);
 		
 	}
+	
 	
 	@GetMapping("/trip/destinationId/{id}")
 	public List<Trip> getTripsByDestinationId(@PathVariable Long id) {

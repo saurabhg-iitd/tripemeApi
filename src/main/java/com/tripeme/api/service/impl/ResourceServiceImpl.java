@@ -32,7 +32,15 @@ public class ResourceServiceImpl implements ResourceService {
 
 	@Override
 	public List<Resource> getResources(Long sourceId, ResourceType resourceType) {
-		return resourceRepository.getResources(sourceId, resourceType);
+		return resourceRepository.getResources(sourceId, resourceType.toString());
+	}
+	
+	public Resource getResourceById(Long id) {
+		return resourceRepository.getOne(id);
+	}
+	
+	public void deleteResource(Resource resource) {
+		resourceRepository.delete(resource);
 	}
 
 }

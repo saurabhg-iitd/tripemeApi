@@ -10,5 +10,7 @@ public interface ResourceService {
 	Resource saveResource(Resource resource);
 	
 	List<Resource> getResources(Long sourceId, ResourceType resourceType);
+	Resource getResourceById(Long id);
+	void deleteResource(Resource resource);
 
 }

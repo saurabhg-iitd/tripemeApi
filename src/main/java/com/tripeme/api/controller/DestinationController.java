@@ -1,5 +1,6 @@
 package com.tripeme.api.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,13 @@ public class DestinationController {
 	
 	@PostMapping("/destination")
 	Destination addDestination(@RequestBody Destination destination) {
+		return destinationService.addDestination(destination);
+	}
+	
+	@PostMapping("/destination/{id}")
+	Destination addDestination(@RequestBody Destination destination,@PathVariable Long id) {
+		destination.setId(id);
+		destination.setUpdatedOn(new Date());
 		return destinationService.addDestination(destination);
 	}
 	
